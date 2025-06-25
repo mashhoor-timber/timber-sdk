@@ -1,0 +1,42 @@
+{
+  "name": "timber-sdk-dev",
+  "version": "0.1.1",
+  "description": "Simplifying accounting and tax filing for businesses",
+  "keywords": [
+    "timber"
+  ],
+  "homepage": "https://github.com/mashhoor-timber/timber-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/mashhoor-timber/timber-sdk/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mashhoor-timber/timber-sdk.git"
+  },
+  "license": "MIT",
+  "author": "mashhoor-timber",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/index.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "axios": "^1.10.0",
+    "dotenv": "^16.5.0",
+    "timber-sdk-dev": "^0.0.9"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/node": "^24.0.4",
+    "nodemon": "^3.1.10",
+    "typescript": "^5.8.3"
+  }
+}
