@@ -1,0 +1,15 @@
+{
+  "entryPoints": ["src/expense.ts"],
+  "out": "docs",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "includeVersion": false,
+  "exclude": [
+    "**/*+(interface|type|enum).ts"
+  ],
+  "excludeNotDocumented": true,
+  "hideGenerator": true,
+  "defaultCategory": "Expense Service",
+  "categorizeByGroup": false
+}
