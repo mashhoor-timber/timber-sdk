@@ -35,12 +35,37 @@ export interface BillPaymentQueryParams {
   invoice: string;
 }
 
+/**
+ * Service for Bill Payment
+ * 
+ * @example 
+ * ```ts
+ * const { createClient } = require('timber-sdk-dev');
+ * const client = createClient('your-api-key');
+ * const billPayment = await client.billPayment.list({ page: 1, limit: 10 });
+ * console.log(billPayment.data);
+ * ```
+ */
+
 export class BillPaymentService {
   private http: AxiosInstance;
 
   constructor(http: AxiosInstance) {
     this.http = http;
   }
+
+  /**
+   * Fetch a paginated list of bill payments.
+   *
+   * @param params - Query options like page, limit, filters, sort.
+   * @returns List of bill payments matching the query.
+   *
+   * @example
+   * ```ts
+   * const billPayments = await client.billPayment.list({ page: 1, limit: 5 });
+   * console.log(billPayments.data);
+   * ```
+   */
 
   async list(
     params: BillPaymentQueryParams
@@ -52,6 +77,31 @@ export class BillPaymentService {
       }
     );
   }
+
+  /**
+   * Create a new bill payment.
+   *
+   * @param data - Bill payment creation payload
+   * @returns The created bill payment
+   *
+   * @example
+   * ```ts
+   * const newBillPayment = {
+   *   invoice: "INV-1234",
+   *   date: "2025-06-23",
+   *   payment_method: "cash",
+   *   cheque_no: "123456789",
+   *   cheque_date: "2025-06-23",
+   *   cheque_due_date: "2025-06-23",
+   *   amount: 45.75,
+   *   bank_name: "Bank of America",
+   *   is_paid: false,
+   *   file: [File],
+   * };
+   * const response = await client.billPayment.create(newBillPayment);
+   * console.log(response.data);
+   * ```    
+   */
 
   async create(
     data: CreateBillPaymentRequest
@@ -82,6 +132,21 @@ export class BillPaymentService {
     );
   }
 
+  /**
+   * Update an existing bill payment.
+   *
+   * @param id - Bill payment ID
+   * @param data - Partial update data
+   * @returns Updated bill payment
+   *
+   * @example
+   * ```ts
+   * const updates = { amount: 50.0 };
+   * const updated = await client.billPayment.update('bill_payment_id_here', updates);
+   * console.log(updated.data);
+   * ```
+   */
+
   async update(
     id: string,
     data: CreateBillPaymentRequest
@@ -111,6 +176,19 @@ export class BillPaymentService {
       formData
     );
   }
+
+  /**
+   * Delete an bill payment by ID.
+   *
+   * @param id - Bill payment ID
+   * @returns Confirmation message
+   *
+   * @example
+   * ```ts
+   * const response = await client.billPayment.delete('bill_payment_id_here');
+   * console.log(response.data.message);
+   * ```
+   */
 
   async delete(id: string): Promise<AxiosResponse<{ message: string }>> {
     return await this.http.delete<{ message: string }>(
