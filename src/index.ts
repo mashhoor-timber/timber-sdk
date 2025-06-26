@@ -10,7 +10,8 @@ import { InvoiceService } from "./invoice";
 import { InvoicePaymentService } from "./invoicePayment";
 import { CustomerService } from "./customer";
 import { TaxRateService } from "./taxRate";
-
+import { SalaryService } from "./salary";
+import { EmployeeService } from "./employee";
 
 class TimberClient {
   expense: ExpenseService;
@@ -22,6 +23,8 @@ class TimberClient {
   billPayment: BillPaymentService;
   customer: CustomerService;
   taxRate: TaxRateService;
+  salary: SalaryService;
+  employee: EmployeeService;
 
   constructor(apiKey: string, options: { baseURL?: string } = {}) {
     const baseURL = `${
@@ -45,6 +48,8 @@ class TimberClient {
     this.invoicePayment = new InvoicePaymentService(http);
     this.customer = new CustomerService(http);
     this.taxRate = new TaxRateService(http);
+    this.salary = new SalaryService(http);
+    this.employee = new EmployeeService(http);
   }
 }
 
