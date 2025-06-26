@@ -2,9 +2,15 @@ import dotenv from "dotenv";
 dotenv.config();
 import axios from "axios";
 import { ExpenseService } from "./expense";
+import { InvoiceService } from "./invoice";
+import { InvoicePaymentService } from "./invoicePayment";
+import { CustomerService } from "./customer";
 
 class TimberClient {
   expense: ExpenseService;
+  invoice: InvoiceService;
+  invoicePayment: InvoicePaymentService;
+  customer: CustomerService;
 
   constructor(apiKey: string, options: { baseURL?: string } = {}) {
     const baseURL = `${
@@ -20,6 +26,9 @@ class TimberClient {
     });
 
     this.expense = new ExpenseService(http);
+    this.invoice = new InvoiceService(http);
+    this.invoicePayment = new InvoicePaymentService(http);
+    this.customer = new CustomerService(http);
   }
 }
 
