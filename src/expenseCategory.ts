@@ -25,12 +25,37 @@ export interface ExpenseCategoryQueryParams {
   filters: string;
 }
 
+/**
+ * Service for Expense Category
+ *
+ * @example
+ * ```ts
+ * const { createClient } = require('timber-sdk-dev');
+ * const client = createClient('your-api-key');
+ * const expenseCategory = await client.expenseCategory.list({ page: 1, limit: 10 });
+ * console.log(expenseCategory.data);
+ * ```
+ */
+
 export class ExpenseCategoryService {
   private http: AxiosInstance;
 
   constructor(http: AxiosInstance) {
     this.http = http;
   }
+
+  /**
+   * Fetch a paginated list of expense categories.
+   *
+   * @param params
+   * @returns
+   *
+   * @example
+   * ```ts
+   * const expenseCategories = await client.expenseCategory.list({ page: 1, limit: 5 });
+   * console.log(expenseCategories.data);
+   * ```
+   */
 
   async list(
     params: ExpenseCategoryQueryParams
@@ -43,6 +68,22 @@ export class ExpenseCategoryService {
     );
   }
 
+  /**
+   * Create a new expense category.
+   *
+   * @param data
+   * @returns
+   *
+   * @example
+   * ```ts
+   * const newExpenseCategory = {
+   *   category: "Travel"
+   * };
+   * const response = await client.expenseCategory.create(newExpenseCategory);
+   * console.log(response.data);
+   * ```
+   */
+
   async create(
     data: CreateExpenseCategoryRequest
   ): Promise<AxiosResponse<ExpenseCategory>> {
@@ -51,6 +92,21 @@ export class ExpenseCategoryService {
       data
     );
   }
+
+  /**
+   * Update an existing expense category.
+   *
+   * @param id
+   * @param data
+   * @returns
+   *
+   * @example
+   * ```ts
+   * const updates = { category: "Food" };
+   * const updated = await client.expenseCategory.update('expense_category_id_here', updates);
+   * console.log(updated.data);
+   * ```
+   */
 
   async update(
     id: string,
@@ -61,6 +117,19 @@ export class ExpenseCategoryService {
       data
     );
   }
+
+  /**
+   * Delete an expense category by ID.
+   *
+   * @param id
+   * @returns
+   *
+   * @example
+   * ```ts
+   * const response = await client.expenseCategory.delete('expense_category_id_here');
+   * console.log(response.data.message);
+   * ```
+   */
 
   async delete(id: string): Promise<AxiosResponse<{ message: string }>> {
     return await this.http.delete<{ message: string }>(

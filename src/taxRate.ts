@@ -21,6 +21,17 @@ export interface TaxRateQueryParams {
   limit?: number;
 }
 
+  /**
+ * Service for Tax Rate
+ * 
+ * @example 
+ * ```ts
+ * const { createClient } = require('timber-sdk-dev');
+ * const client = createClient('your-api-key');
+ * const taxRate = await client.taxRate.list({ page: 1, limit: 10 });
+ * console.log(taxRate.data);
+ * ```    
+ */
 export class TaxRateService {
   private http: AxiosInstance;
 
