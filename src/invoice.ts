@@ -1,4 +1,5 @@
 import { AxiosInstance, AxiosResponse } from "axios";
+import FormData from 'form-data';
 
 export type NewInvoiceItem = {
   id: string;
@@ -11,47 +12,47 @@ export type NewInvoiceItem = {
 };
 
 export interface InvoiceData {
-  mode: "create" | "edit";
-  payment_method: string;
-  title: string;
-  company: string;
-  isTitleChanged: boolean;
-  customer: {
-    customer_id?: string;
-    name: string;
-    email: string;
-    trn?: string;
-    country_code: string;
-    mobile: string;
-    address: string;
-  };
-  biller: {
-    biller_id?: string;
-    name: string;
-    email: string;
-    country_code: string;
-    mobile: string;
-    address: string;
-    trn?: string;
-  };
-  invoice_number: string;
-  invoice_date: any;
-  due_date: any | null;
-  currency: string;
-  items: NewInvoiceItem[];
-  terms: any;
-  notes: any;
-  sub_total: number;
-  vat_total: number;
-  discount_total: number;
-  shipping: number;
-  total: number;
-  amount_paid: number;
-  amount_due: number;
-  logo: string | null | File;
-  place_of_supply?: string;
-  wafeq: boolean;
-  zoho: boolean;
+ mode: 'create' | 'edit';
+    payment_method: string;
+    title: string;
+    company: string;
+    isTitleChanged: boolean;
+    customer: {
+        customer_id?: string;
+        name: string;
+        email: string;
+        trn?: string;
+        country_code: string;
+        mobile: string;
+        address: string;
+    };
+    biller: {
+        biller_id?: string;
+        name: string;
+        email: string;
+        country_code: string;
+        mobile: string;
+        address: string;
+        trn?: string;
+    };
+    invoice_number: string;
+    invoice_date: any;
+    due_date: any | null;
+    currency: string;
+    items: NewInvoiceItem[];
+    terms: any;
+    notes: any;
+    sub_total: number;
+    vat_total: number;
+    discount_total: number;
+    shipping: number;
+    total: number;
+    amount_paid: number;
+    amount_due: number;
+    logo: any | null | File;
+    place_of_supply?: string;
+    wafeq: boolean;
+    zoho: boolean;
 }
 
 export interface Invoice extends InvoiceData {
@@ -102,108 +103,32 @@ export class InvoiceService {
     return await this.http.get<Invoice[]>("/customer/invoice", { params });
   }
 
-  /**
-   * Fetch a single invoice by ID.
-   *
-   * @param id - Invoice ID
-   * @returns Invoice object
-   *
-   * @example
-   * ```ts
-   * const invoice = await client.invoice.get('invoice_id_here');
-   * console.log(invoice.data);
-   * ```
-   */
+async create(data: InvoiceData): Promise<AxiosResponse<Invoice>> {
+ const formData = new FormData();
 
-  async get(id: string): Promise<AxiosResponse<Invoice>> {
-    return await this.http.get<Invoice>(`/customer/invoice/${id}`);
+for (const key in data) {
+  const value = (data as any)[key];
+
+  if (key === "items" || key === "customer" || key === "biller") {
+    formData.append(key, JSON.stringify(value));
+  } else if (key === "logo" && value && typeof value.pipe === "function") {
+    // This is a ReadStream
+    formData.append("logo", value);
+  } else if (value instanceof Date) {
+    formData.append(key, value.toISOString());
+  } else if (value !== undefined && value !== null) {
+    formData.append(key, value.toString());
   }
-
-  /**
-   * Create a new invoice.
-   *
-   * @param data - Invoice creation payload
-   * @returns The created invoice
-   *
-   * @example
-   * ```ts
-   * const newInvoice = {
-   *   mode: "create",
-   *   payment_method: "cash",
-   *   title: "Invoice",
-   *   company: "Timber",
-   *   isTitleChanged: false,
-   *   customer: {
-   *     customer_id: "123456789",
-   *     name: "John Doe",
-   *     email: "johndoe@example.com",
-   *     trn: "123456789",
-   *     country_code: "+1",
-   *     mobile: "1234567890",
-   *     address: "123 Main St, Anytown, USA",
-   *   },
-   *   biller: {
-   *     biller_id: "123456789",
-   *     name: "John Doe",
-   *     email: "johndoe@example.com",
-   *     country_code: "+1",
-   *     mobile: "1234567890",
-   *     address: "123 Main St, Anytown, USA",
-   *     trn: "123456789",
-   *   },
-   *   invoice_number: "INV-1234",
-   *   invoice_date: "2025-06-23",
-   *   due_date: "2025-06-23",
-   *   currency: "USD",
-   *   items: [
-   *     {
-   *       id: "123456789",
-   *       title: "Item 1",
-   *       quantity: 1,
-   *       rate: 100,
-   *       vat: 0,
-   *       discount: 0,
-   *       total: 100,
-   *     },
-   *   ],
-   *   terms: "Net 30",
-   *   notes: "This is a note",
-   *   sub_total: 100,
-   *   vat_total: 0,
-   *   discount_total: 0,
-   *   shipping: 0,
-   *   total: 100,
-   *   amount_paid: 0,
-   *   amount_due: 100,
-   *   logo: "https://example.com/logo.png",
-   *   place_of_supply: "Anytown, USA",
-   *   wafeq: false,
-   *   zoho: false,
-   * };
-   * const response = await client.invoice.create(newInvoice);
-   * console.log(response.data);
-   * ```
-   */
-
-  async create(data: InvoiceData): Promise<AxiosResponse<Invoice>> {
-    return await this.http.post<Invoice>("/customer/invoice", data);
+}
+  return await this.http.post<Invoice>(
+  "/customer/invoice",
+  formData,
+  {
+    headers: formData.getHeaders(),
   }
+);
 
-  /**
-   * Update an existing invoice.
-   *
-   * @param id - Invoice ID
-   * @param data - Partial update data
-   * @returns Updated invoice
-   *
-   * @example
-   * ```ts
-   * const updates = { title: "Updated Invoice" };
-   * const updated = await client.invoice.update('invoice_id_here', updates);
-   * console.log(updated.data);
-   * ```
-   */
-
+}
   async update(
     id: string,
     data: Partial<InvoiceData>
