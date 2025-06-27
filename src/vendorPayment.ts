@@ -1,4 +1,6 @@
 import { AxiosInstance, AxiosResponse } from "axios";
+import FormData from 'form-data';
+
 
 export interface CreateVendorPaymentRequest {
   title: string;
@@ -218,7 +220,9 @@ export class VendorPaymentService {
     if (data.logo) {
       formData.append("file", data.logo);
     }
-    return await this.http.post<VendorPayment>("/customer/purchase", formData);
+    return await this.http.post<VendorPayment>("/customer/purchase", formData, {
+      headers: formData.getHeaders()
+    });
   }
 
   /**
@@ -277,7 +281,10 @@ export class VendorPaymentService {
     }
     return await this.http.put<VendorPayment>(
       `/customer/purchase/${id}`,
-      formData
+      formData,
+      {
+        headers: formData.getHeaders()
+      }
     );
   }
 

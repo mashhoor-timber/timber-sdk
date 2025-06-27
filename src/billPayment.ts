@@ -1,4 +1,5 @@
 import { AxiosInstance, AxiosResponse } from "axios";
+import FormData from "form-data";
 
 export interface CreateBillPaymentRequest {
   invoice: string;
@@ -37,8 +38,8 @@ export interface BillPaymentQueryParams {
 
 /**
  * Service for Bill Payment
- * 
- * @example 
+ *
+ * @example
  * ```ts
  * const { createClient } = require('timber-sdk-dev');
  * const client = createClient('your-api-key');
@@ -100,7 +101,7 @@ export class BillPaymentService {
    * };
    * const response = await client.billPayment.create(newBillPayment);
    * console.log(response.data);
-   * ```    
+   * ```
    */
 
   async create(
@@ -128,7 +129,10 @@ export class BillPaymentService {
     }
     return await this.http.post<BillPayment>(
       "/customer/purchase/payment-record",
-      formData
+      formData,
+      {
+        headers: formData.getHeaders(),
+      }
     );
   }
 
@@ -173,7 +177,10 @@ export class BillPaymentService {
     }
     return await this.http.put<BillPayment>(
       `/customer/purchase/payment-record/${id}`,
-      formData
+      formData,
+      {
+        headers: formData.getHeaders(),
+      }
     );
   }
 
