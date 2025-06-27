@@ -1,4 +1,5 @@
 import { AxiosInstance, AxiosResponse } from "axios";
+import FormData from 'form-data';
 
 export type NewInvoiceItem = {
     id: string;
@@ -48,7 +49,7 @@ export interface InvoiceData {
     total: number;
     amount_paid: number;
     amount_due: number;
-    logo: string | null | File;
+    logo: any | null | File;
     place_of_supply?: string;
     wafeq: boolean;
     zoho: boolean;
@@ -78,10 +79,32 @@ export class InvoiceService {
     return await this.http.get<Invoice[]>("/customer/invoice", { params });
   }
 
-  async create(data: InvoiceData): Promise<AxiosResponse<Invoice>> {
-    return await this.http.post<Invoice>("/customer/invoice", data);
-  }
+async create(data: InvoiceData): Promise<AxiosResponse<Invoice>> {
+ const formData = new FormData();
 
+for (const key in data) {
+  const value = (data as any)[key];
+
+  if (key === "items" || key === "customer" || key === "biller") {
+    formData.append(key, JSON.stringify(value));
+  } else if (key === "logo" && value && typeof value.pipe === "function") {
+    // This is a ReadStream
+    formData.append("logo", value);
+  } else if (value instanceof Date) {
+    formData.append(key, value.toISOString());
+  } else if (value !== undefined && value !== null) {
+    formData.append(key, value.toString());
+  }
+}
+  return await this.http.post<Invoice>(
+  "/customer/invoice",
+  formData,
+  {
+    headers: formData.getHeaders(),
+  }
+);
+
+}
   async update(
     id: string,
     data: Partial<InvoiceData>
